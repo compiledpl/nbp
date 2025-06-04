@@ -1,0 +1,104 @@
+{
+    "openapi": "3.1.1",
+    "info": {
+        "title": "NBP API",
+        "description": "NBP (Narodowy Bank Polski) currency exchange API",
+        "version": "1.0.0"
+    },
+    "servers": [
+        {
+            "url": "https://api.nbp.pl/api"
+        }
+    ],
+    "components": {
+        "schemas": {
+            "TableType": {
+                "type": "string",
+                "enum": ["A", "B", "C"]
+            },
+
+            "ExchangeRate": {
+                "type": "object",
+                "properties": {
+                    "currency": {
+                        "type": "string"
+                    },
+                    "code": {
+                        "type": "string"
+                    },
+                    "bid": {
+                        "type": "number"
+                    },
+                    "ask": {
+                        "type": "number"
+                    },
+                    "mid": {
+                        "type": "number"
+                    }
+                }
+            },
+            "CurrencyExchangeTable": {
+                "type": "object",
+                "properties": {
+                    "table": {
+                        "$ref": "#/components/schemas/TableType"
+                    },
+                    "no": {
+                        "type": "string",
+                        "description": "Table number"
+                    },
+                    "tradingDate": {
+                        "type": "string"
+                    },
+                    "effectiveDate": {
+                        "type": "string",
+                        "description": "Date representing when the currency exchange was published."
+                    },
+                    "rates": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/ExchangeRate"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "paths": {
+        "/exchangerates/tables/{table}/": {
+            "summary": "Current table of currency conversion rates",
+            "get": {
+                "parameters": [
+                    {
+                        "name": "table",
+                        "in": "path",
+                        "description": "The table type to query. There are types A, B and C",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/components/schemas/TableType"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Current currency conversion rates",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/CurrencyExchangeTable"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "externalDocs": {
+        "url": "https://api.nbp.pl",
+        "description": "Official, human-readable API documentation."
+    }
+}
