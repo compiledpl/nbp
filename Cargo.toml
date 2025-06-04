@@ -1,0 +1,14 @@
+[package]
+name = "nbp"
+description = "A Rust library for accessing the National Bank of Poland's API."
+version = "0.1.0"
+readme = "README.md"
+repository = "https://github.com/compiledpl/nbp"
+homepage = "https://github.com/compiledpl/nbp"
+authors = ["compiled.pl <contact@compiled.pl>"]
+keywords = ["nbp", "api", "finance", "currency", "poland"]
+categories = ["finance", "api-bindings"]
+license = "MIT"
+edition = "2024"
+
+[dependencies]
