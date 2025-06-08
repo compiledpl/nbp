@@ -61,6 +61,19 @@
                         }
                     }
                 }
+            },
+            "GoldPrice": {
+                "type": "object",
+                "properties": {
+                    "data": {
+                        "type": "string",
+                        "description": "Date representing when the gold price was published."
+                    },
+                    "cena": {
+                        "type": "string",
+                        "description": "The price of 1g of gold (of 1000 millesimal fineness) calculated at NBP."
+                    }
+                }
             }
         }
     },
@@ -87,11 +100,52 @@
                                 "schema": {
                                     "type": "array",
                                     "items": {
+                                        "$ref": "#/components/schemas/GoldPrice"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/cenyzlota": {
+            "get": {
+                "responses": {
+                    "200": {
+                        "description": "Current gold price",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
                                         "$ref": "#/components/schemas/CurrencyExchangeTable"
                                     }
                                 }
                             }
                         }
+                    }
+                }
+            }
+        },
+        "/cenyzlota/today": {
+            "get": {
+                "responses": {
+                    "200": {
+                        "description": "Current gold price",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/CurrencyExchangeTable"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Lack of data (gold price has not been published today)"
                     }
                 }
             }
