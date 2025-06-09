@@ -22,6 +22,13 @@ pub enum ExchangeratesTablesTableGetError {
     UnknownValue(serde_json::Value),
 }
 
+/// struct for typed errors of method [`exchangerates_tables_table_last_top_count_get`]
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(untagged)]
+pub enum ExchangeratesTablesTableLastTopCountGetError {
+    UnknownValue(serde_json::Value),
+}
+
 
 pub async fn exchangerates_tables_table_get(configuration: &configuration::Configuration, table: models::TableType) -> Result<Vec<models::CurrencyExchangeTable>, Error<ExchangeratesTablesTableGetError>> {
     // add a prefix to parameters to efficiently prevent name collisions
@@ -55,6 +62,43 @@ pub async fn exchangerates_tables_table_get(configuration: &configuration::Confi
     } else {
         let content = resp.text().await?;
         let entity: Option<ExchangeratesTablesTableGetError> = serde_json::from_str(&content).ok();
+        Err(Error::ResponseError(ResponseContent { status, content, entity }))
+    }
+}
+
+pub async fn exchangerates_tables_table_last_top_count_get(configuration: &configuration::Configuration, table: models::TableType, top_count: i32) -> Result<Vec<models::CurrencyExchangeTable>, Error<ExchangeratesTablesTableLastTopCountGetError>> {
+    // add a prefix to parameters to efficiently prevent name collisions
+    let p_table = table;
+    let p_top_count = top_count;
+
+    let uri_str = format!("{}/exchangerates/tables/{table}/last/{topCount}/", configuration.base_path, table=p_table.to_string(), topCount=p_top_count);
+    let mut req_builder = configuration.client.request(reqwest::Method::GET, &uri_str);
+
+    if let Some(ref user_agent) = configuration.user_agent {
+        req_builder = req_builder.header(reqwest::header::USER_AGENT, user_agent.clone());
+    }
+
+    let req = req_builder.build()?;
+    let resp = configuration.client.execute(req).await?;
+
+    let status = resp.status();
+    let content_type = resp
+        .headers()
+        .get("content-type")
+        .and_then(|v| v.to_str().ok())
+        .unwrap_or("application/octet-stream");
+    let content_type = super::ContentType::from(content_type);
+
+    if !status.is_client_error() && !status.is_server_error() {
+        let content = resp.text().await?;
+        match content_type {
+            ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
+            ContentType::Text => return Err(Error::from(serde_json::Error::custom("Received `text/plain` content type response that cannot be converted to `Vec&lt;models::CurrencyExchangeTable&gt;`"))),
+            ContentType::Unsupported(unknown_type) => return Err(Error::from(serde_json::Error::custom(format!("Received `{unknown_type}` content type response that cannot be converted to `Vec&lt;models::CurrencyExchangeTable&gt;`")))),
+        }
+    } else {
+        let content = resp.text().await?;
+        let entity: Option<ExchangeratesTablesTableLastTopCountGetError> = serde_json::from_str(&content).ok();
         Err(Error::ResponseError(ResponseContent { status, content, entity }))
     }
 }
