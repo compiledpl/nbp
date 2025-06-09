@@ -15,6 +15,21 @@ use crate::openapi::{apis::ResponseContent, models};
 use super::{Error, configuration, ContentType};
 
 
+/// struct for typed errors of method [`cenyzlota_get`]
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(untagged)]
+pub enum CenyzlotaGetError {
+    UnknownValue(serde_json::Value),
+}
+
+/// struct for typed errors of method [`cenyzlota_today_get`]
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(untagged)]
+pub enum CenyzlotaTodayGetError {
+    Status404(),
+    UnknownValue(serde_json::Value),
+}
+
 /// struct for typed errors of method [`exchangerates_tables_table_get`]
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(untagged)]
@@ -30,7 +45,75 @@ pub enum ExchangeratesTablesTableLastTopCountGetError {
 }
 
 
-pub async fn exchangerates_tables_table_get(configuration: &configuration::Configuration, table: models::TableType) -> Result<Vec<models::CurrencyExchangeTable>, Error<ExchangeratesTablesTableGetError>> {
+pub async fn cenyzlota_get(configuration: &configuration::Configuration, ) -> Result<Vec<models::CurrencyExchangeTable>, Error<CenyzlotaGetError>> {
+
+    let uri_str = format!("{}/cenyzlota", configuration.base_path);
+    let mut req_builder = configuration.client.request(reqwest::Method::GET, &uri_str);
+
+    if let Some(ref user_agent) = configuration.user_agent {
+        req_builder = req_builder.header(reqwest::header::USER_AGENT, user_agent.clone());
+    }
+
+    let req = req_builder.build()?;
+    let resp = configuration.client.execute(req).await?;
+
+    let status = resp.status();
+    let content_type = resp
+        .headers()
+        .get("content-type")
+        .and_then(|v| v.to_str().ok())
+        .unwrap_or("application/octet-stream");
+    let content_type = super::ContentType::from(content_type);
+
+    if !status.is_client_error() && !status.is_server_error() {
+        let content = resp.text().await?;
+        match content_type {
+            ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
+            ContentType::Text => return Err(Error::from(serde_json::Error::custom("Received `text/plain` content type response that cannot be converted to `Vec&lt;models::CurrencyExchangeTable&gt;`"))),
+            ContentType::Unsupported(unknown_type) => return Err(Error::from(serde_json::Error::custom(format!("Received `{unknown_type}` content type response that cannot be converted to `Vec&lt;models::CurrencyExchangeTable&gt;`")))),
+        }
+    } else {
+        let content = resp.text().await?;
+        let entity: Option<CenyzlotaGetError> = serde_json::from_str(&content).ok();
+        Err(Error::ResponseError(ResponseContent { status, content, entity }))
+    }
+}
+
+pub async fn cenyzlota_today_get(configuration: &configuration::Configuration, ) -> Result<Vec<models::CurrencyExchangeTable>, Error<CenyzlotaTodayGetError>> {
+
+    let uri_str = format!("{}/cenyzlota/today", configuration.base_path);
+    let mut req_builder = configuration.client.request(reqwest::Method::GET, &uri_str);
+
+    if let Some(ref user_agent) = configuration.user_agent {
+        req_builder = req_builder.header(reqwest::header::USER_AGENT, user_agent.clone());
+    }
+
+    let req = req_builder.build()?;
+    let resp = configuration.client.execute(req).await?;
+
+    let status = resp.status();
+    let content_type = resp
+        .headers()
+        .get("content-type")
+        .and_then(|v| v.to_str().ok())
+        .unwrap_or("application/octet-stream");
+    let content_type = super::ContentType::from(content_type);
+
+    if !status.is_client_error() && !status.is_server_error() {
+        let content = resp.text().await?;
+        match content_type {
+            ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
+            ContentType::Text => return Err(Error::from(serde_json::Error::custom("Received `text/plain` content type response that cannot be converted to `Vec&lt;models::CurrencyExchangeTable&gt;`"))),
+            ContentType::Unsupported(unknown_type) => return Err(Error::from(serde_json::Error::custom(format!("Received `{unknown_type}` content type response that cannot be converted to `Vec&lt;models::CurrencyExchangeTable&gt;`")))),
+        }
+    } else {
+        let content = resp.text().await?;
+        let entity: Option<CenyzlotaTodayGetError> = serde_json::from_str(&content).ok();
+        Err(Error::ResponseError(ResponseContent { status, content, entity }))
+    }
+}
+
+pub async fn exchangerates_tables_table_get(configuration: &configuration::Configuration, table: models::TableType) -> Result<Vec<models::GoldPrice>, Error<ExchangeratesTablesTableGetError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_table = table;
 
@@ -56,8 +139,8 @@ pub async fn exchangerates_tables_table_get(configuration: &configuration::Confi
         let content = resp.text().await?;
         match content_type {
             ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
-            ContentType::Text => return Err(Error::from(serde_json::Error::custom("Received `text/plain` content type response that cannot be converted to `Vec&lt;models::CurrencyExchangeTable&gt;`"))),
-            ContentType::Unsupported(unknown_type) => return Err(Error::from(serde_json::Error::custom(format!("Received `{unknown_type}` content type response that cannot be converted to `Vec&lt;models::CurrencyExchangeTable&gt;`")))),
+            ContentType::Text => return Err(Error::from(serde_json::Error::custom("Received `text/plain` content type response that cannot be converted to `Vec&lt;models::GoldPrice&gt;`"))),
+            ContentType::Unsupported(unknown_type) => return Err(Error::from(serde_json::Error::custom(format!("Received `{unknown_type}` content type response that cannot be converted to `Vec&lt;models::GoldPrice&gt;`")))),
         }
     } else {
         let content = resp.text().await?;
