@@ -22,6 +22,7 @@
                 "properties": {
                     "currency": {
                         "type": "string"
+                        
                     },
                     "code": {
                         "type": "string"
@@ -35,7 +36,8 @@
                     "mid": {
                         "type": "number"
                     }
-                }
+                },
+                "required": ["currency", "code"]
             },
             "CurrencyExchangeTable": {
                 "type": "object",
@@ -60,7 +62,8 @@
                             "$ref": "#/components/schemas/ExchangeRate"
                         }
                     }
-                }
+                },
+                "required": ["table", "no", "rates"]
             },
             "GoldPrice": {
                 "type": "object",
@@ -70,10 +73,11 @@
                         "description": "Date representing when the gold price was published."
                     },
                     "cena": {
-                        "type": "string",
+                        "type": "number",
                         "description": "The price of 1g of gold (of 1000 millesimal fineness) calculated at NBP."
                     }
-                }
+                },
+                "required": ["data", "cena"]
             }
         }
     },
@@ -100,7 +104,7 @@
                                 "schema": {
                                     "type": "array",
                                     "items": {
-                                        "$ref": "#/components/schemas/GoldPrice"
+                                        "$ref": "#/components/schemas/CurrencyExchangeTable"
                                     }
                                 }
                             }
@@ -119,7 +123,7 @@
                                 "schema": {
                                     "type": "array",
                                     "items": {
-                                        "$ref": "#/components/schemas/CurrencyExchangeTable"
+                                        "$ref": "#/components/schemas/GoldPrice"
                                     }
                                 }
                             }
@@ -138,7 +142,7 @@
                                 "schema": {
                                     "type": "array",
                                     "items": {
-                                        "$ref": "#/components/schemas/CurrencyExchangeTable"
+                                        "$ref": "#/components/schemas/GoldPrice"
                                     }
                                 }
                             }
