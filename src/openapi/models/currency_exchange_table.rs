@@ -13,28 +13,28 @@ use serde::{Deserialize, Serialize};
 
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct CurrencyExchangeTable {
-    #[serde(rename = "table", skip_serializing_if = "Option::is_none")]
-    pub table: Option<models::TableType>,
+    #[serde(rename = "table")]
+    pub table: models::TableType,
     /// Table number
-    #[serde(rename = "no", skip_serializing_if = "Option::is_none")]
-    pub no: Option<String>,
+    #[serde(rename = "no")]
+    pub no: String,
     #[serde(rename = "tradingDate", skip_serializing_if = "Option::is_none")]
     pub trading_date: Option<String>,
     /// Date representing when the currency exchange was published.
     #[serde(rename = "effectiveDate", skip_serializing_if = "Option::is_none")]
     pub effective_date: Option<String>,
-    #[serde(rename = "rates", skip_serializing_if = "Option::is_none")]
-    pub rates: Option<Vec<models::ExchangeRate>>,
+    #[serde(rename = "rates")]
+    pub rates: Vec<models::ExchangeRate>,
 }
 
 impl CurrencyExchangeTable {
-    pub fn new() -> CurrencyExchangeTable {
+    pub fn new(table: models::TableType, no: String, rates: Vec<models::ExchangeRate>) -> CurrencyExchangeTable {
         CurrencyExchangeTable {
-            table: None,
-            no: None,
+            table,
+            no,
             trading_date: None,
             effective_date: None,
-            rates: None,
+            rates,
         }
     }
 }
