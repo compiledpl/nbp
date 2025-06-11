@@ -113,6 +113,44 @@
                 }
             }
         },
+        "/exchangerates/tables/{table}/last/{topCount}/": {
+            "summary": "Last `topCount` rates from the requested table",
+            "get": {
+                "parameters": [
+                    {
+                        "name": "table",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/components/schemas/TableType"
+                        }
+                    },
+                    {
+                        "name": "topCount",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Currency conversion rates",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/CurrencyExchangeTable"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
         "/cenyzlota": {
             "get": {
                 "responses": {
@@ -153,7 +191,7 @@
                     }
                 }
             }
-        }
+        },
     },
     "externalDocs": {
         "url": "https://api.nbp.pl",
