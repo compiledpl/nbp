@@ -112,6 +112,44 @@
         }
       }
     },
+    "/exchangerates/rates/{table}/{code}/": {
+      "summary": "Currency conversion rates for a specific currency",
+      "get": {
+        "parameters": [
+          {
+            "name": "table",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/TableType"
+            }
+          },
+          {
+            "name": "code",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Currency conversion rates for a specific currency",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "items": {
+                    "$ref": "#/components/schemas/CurrencyExchangeTable"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/exchangerates/tables/{table}/last/{topCount}/": {
       "summary": "Last `topCount` rates from the requested table",
       "get": {
