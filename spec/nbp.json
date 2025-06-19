@@ -1,200 +1,253 @@
 {
-    "openapi": "3.1.1",
-    "info": {
-        "title": "NBP API",
-        "description": "NBP (Narodowy Bank Polski) currency exchange API",
-        "version": "1.0.0"
-    },
-    "servers": [
-        {
-            "url": "https://api.nbp.pl/api"
-        }
-    ],
-    "components": {
-        "schemas": {
-            "TableType": {
-                "type": "string",
-                "enum": ["A", "B", "C"]
-            },
-
-            "ExchangeRate": {
-                "type": "object",
-                "properties": {
-                    "currency": {
-                        "type": "string"
-                        
-                    },
-                    "code": {
-                        "type": "string"
-                    },
-                    "bid": {
-                        "type": "number"
-                    },
-                    "ask": {
-                        "type": "number"
-                    },
-                    "mid": {
-                        "type": "number"
-                    }
-                },
-                "required": ["currency", "code"]
-            },
-            "CurrencyExchangeTable": {
-                "type": "object",
-                "properties": {
-                    "table": {
-                        "$ref": "#/components/schemas/TableType"
-                    },
-                    "no": {
-                        "type": "string",
-                        "description": "Table number"
-                    },
-                    "tradingDate": {
-                        "type": "string"
-                    },
-                    "effectiveDate": {
-                        "type": "string",
-                        "description": "Date representing when the currency exchange was published."
-                    },
-                    "rates": {
-                        "type": "array",
-                        "items": {
-                            "$ref": "#/components/schemas/ExchangeRate"
-                        }
-                    }
-                },
-                "required": ["table", "no", "rates"]
-            },
-            "GoldPrice": {
-                "type": "object",
-                "properties": {
-                    "data": {
-                        "type": "string",
-                        "description": "Date representing when the gold price was published."
-                    },
-                    "cena": {
-                        "type": "number",
-                        "description": "The price of 1g of gold (of 1000 millesimal fineness) calculated at NBP."
-                    }
-                },
-                "required": ["data", "cena"]
-            }
-        }
-    },
-    "paths": {
-        "/exchangerates/tables/{table}/": {
-            "summary": "Current table of currency conversion rates",
-            "get": {
-                "parameters": [
-                    {
-                        "name": "table",
-                        "in": "path",
-                        "description": "The table type to query. There are types A, B and C",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/components/schemas/TableType"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Current currency conversion rates",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "array",
-                                    "items": {
-                                        "$ref": "#/components/schemas/CurrencyExchangeTable"
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        },
-        "/exchangerates/tables/{table}/last/{topCount}/": {
-            "summary": "Last `topCount` rates from the requested table",
-            "get": {
-                "parameters": [
-                    {
-                        "name": "table",
-                        "in": "path",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/components/schemas/TableType"
-                        }
-                    },
-                    {
-                        "name": "topCount",
-                        "in": "path",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Currency conversion rates",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "array",
-                                    "items": {
-                                        "$ref": "#/components/schemas/CurrencyExchangeTable"
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        "/cenyzlota": {
-            "get": {
-                "responses": {
-                    "200": {
-                        "description": "Current gold price",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "array",
-                                    "items": {
-                                        "$ref": "#/components/schemas/GoldPrice"
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        },
-        "/cenyzlota/today": {
-            "get": {
-                "responses": {
-                    "200": {
-                        "description": "Current gold price",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "array",
-                                    "items": {
-                                        "$ref": "#/components/schemas/GoldPrice"
-                                    }
-                                }
-                            }
-                        }
-                    },
-                    "404": {
-                        "description": "Lack of data (gold price has not been published today)"
-                    }
-                }
-            }
-        },
-    },
-    "externalDocs": {
-        "url": "https://api.nbp.pl",
-        "description": "Official, human-readable API documentation."
+  "openapi": "3.1.1",
+  "info": {
+    "title": "NBP API",
+    "description": "NBP (Narodowy Bank Polski) currency exchange API",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://api.nbp.pl/api"
     }
+  ],
+  "components": {
+    "schemas": {
+      "TableType": {
+        "type": "string",
+        "enum": ["A", "B", "C"]
+      },
+
+      "ExchangeRate": {
+        "type": "object",
+        "properties": {
+          "currency": {
+            "type": "string"
+          },
+          "code": {
+            "type": "string"
+          },
+          "bid": {
+            "type": "number"
+          },
+          "ask": {
+            "type": "number"
+          },
+          "mid": {
+            "type": "number"
+          }
+        },
+        "required": ["currency", "code"]
+      },
+      "CurrencyExchangeTable": {
+        "type": "object",
+        "properties": {
+          "table": {
+            "$ref": "#/components/schemas/TableType"
+          },
+          "no": {
+            "type": "string",
+            "description": "Table number"
+          },
+          "tradingDate": {
+            "type": "string"
+          },
+          "effectiveDate": {
+            "type": "string",
+            "description": "Date representing when the currency exchange was published."
+          },
+          "rates": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ExchangeRate"
+            }
+          }
+        },
+        "required": ["table", "no", "rates"]
+      },
+      "GoldPrice": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "string",
+            "description": "Date representing when the gold price was published."
+          },
+          "cena": {
+            "type": "number",
+            "description": "The price of 1g of gold (of 1000 millesimal fineness) calculated at NBP."
+          }
+        },
+        "required": ["data", "cena"]
+      }
+    }
+  },
+  "paths": {
+    "/exchangerates/tables/{table}/": {
+      "summary": "Current table of currency conversion rates",
+      "get": {
+        "parameters": [
+          {
+            "name": "table",
+            "in": "path",
+            "description": "The table type to query. There are types A, B and C",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/TableType"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Current currency conversion rates",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/CurrencyExchangeTable"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/exchangerates/tables/{table}/last/{topCount}/": {
+      "summary": "Last `topCount` rates from the requested table",
+      "get": {
+        "parameters": [
+          {
+            "name": "table",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/TableType"
+            }
+          },
+          {
+            "name": "topCount",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Currency conversion rates",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/CurrencyExchangeTable"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/exchangerates/rates/{table}/{code}/{startDate}/{endDate}/": {
+      "summary": "Currency conversion rates for a given date range",
+      "get": {
+        "parameters": [
+          {
+            "name": "table",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/TableType"
+            }
+          },
+          {
+            "name": "code",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "startDate",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "endDate",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Currency conversion rates",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "items": {
+                    "$ref": "#/components/schemas/ExchangeRate"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/cenyzlota": {
+      "get": {
+        "responses": {
+          "200": {
+            "description": "Current gold price",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/GoldPrice"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/cenyzlota/today": {
+      "get": {
+        "responses": {
+          "200": {
+            "description": "Current gold price",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/GoldPrice"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Lack of data (gold price has not been published today)"
+          }
+        }
+      }
+    }
+  },
+  "externalDocs": {
+    "url": "https://api.nbp.pl",
+    "description": "Official, human-readable API documentation."
+  }
 }
