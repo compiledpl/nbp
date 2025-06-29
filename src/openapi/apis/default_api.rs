@@ -37,6 +37,14 @@ pub enum ExchangeratesRatesTableCodeGetError {
     UnknownValue(serde_json::Value),
 }
 
+/// struct for typed errors of method [`exchangerates_rates_table_code_today_get`]
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(untagged)]
+pub enum ExchangeratesRatesTableCodeTodayGetError {
+    Status404(),
+    UnknownValue(serde_json::Value),
+}
+
 /// struct for typed errors of method [`exchangerates_tables_table_get`]
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(untagged)]
@@ -153,6 +161,43 @@ pub async fn exchangerates_rates_table_code_get(configuration: &configuration::C
     } else {
         let content = resp.text().await?;
         let entity: Option<ExchangeratesRatesTableCodeGetError> = serde_json::from_str(&content).ok();
+        Err(Error::ResponseError(ResponseContent { status, content, entity }))
+    }
+}
+
+pub async fn exchangerates_rates_table_code_today_get(configuration: &configuration::Configuration, table: models::TableType, code: &str) -> Result<models::ExchangeRate, Error<ExchangeratesRatesTableCodeTodayGetError>> {
+    // add a prefix to parameters to efficiently prevent name collisions
+    let p_table = table;
+    let p_code = code;
+
+    let uri_str = format!("{}/exchangerates/rates/{table}/{code}/today/", configuration.base_path, table=p_table.to_string(), code=crate::openapi::apis::urlencode(p_code));
+    let mut req_builder = configuration.client.request(reqwest::Method::GET, &uri_str);
+
+    if let Some(ref user_agent) = configuration.user_agent {
+        req_builder = req_builder.header(reqwest::header::USER_AGENT, user_agent.clone());
+    }
+
+    let req = req_builder.build()?;
+    let resp = configuration.client.execute(req).await?;
+
+    let status = resp.status();
+    let content_type = resp
+        .headers()
+        .get("content-type")
+        .and_then(|v| v.to_str().ok())
+        .unwrap_or("application/octet-stream");
+    let content_type = super::ContentType::from(content_type);
+
+    if !status.is_client_error() && !status.is_server_error() {
+        let content = resp.text().await?;
+        match content_type {
+            ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
+            ContentType::Text => return Err(Error::from(serde_json::Error::custom("Received `text/plain` content type response that cannot be converted to `models::ExchangeRate`"))),
+            ContentType::Unsupported(unknown_type) => return Err(Error::from(serde_json::Error::custom(format!("Received `{unknown_type}` content type response that cannot be converted to `models::ExchangeRate`")))),
+        }
+    } else {
+        let content = resp.text().await?;
+        let entity: Option<ExchangeratesRatesTableCodeTodayGetError> = serde_json::from_str(&content).ok();
         Err(Error::ResponseError(ResponseContent { status, content, entity }))
     }
 }

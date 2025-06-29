@@ -150,6 +150,44 @@
         }
       }
     },
+    "/exchangerates/rates/{table}/{code}/today/": {
+      "summary": "Today's currency conversion rate for a given table and code",
+      "get": {
+        "parameters": [
+          {
+            "name": "table",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/TableType"
+            }
+          },
+          {
+            "name": "code",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Current currency conversion rates",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExchangeRate"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Lack of data (currency conversion rate has not been published today)"
+          }
+        }
+      }
+    },
     "/exchangerates/tables/{table}/last/{topCount}/": {
       "summary": "Last `topCount` rates from the requested table",
       "get": {
