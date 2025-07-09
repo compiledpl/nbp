@@ -8,7 +8,7 @@ async fn test_exchangerates_tables_table_get() {
     dbg!(
         api::exchangerates_tables_table_get(&Configuration::new(), TableType::A)
             .await
-            .unwrap()
+            .expect("Querying exchange rates tables failed.")
     );
 }
 
@@ -60,7 +60,7 @@ async fn test_exchangerates_rates_table_code_date_get() {
             "2025-06-10"
         )
         .await
-        .unwrap()
+        .expect("Querying exchange rates for a given date failed.")
     );
 }
 
@@ -75,7 +75,7 @@ async fn test_exchangerates_rates_table_code_start_date_end_date_get() {
             "2025-06-19"
         )
         .await
-        .unwrap()
+        .expect("Querying exchange rates for a given date range failed.")
     );
 }
 
@@ -84,7 +84,7 @@ async fn test_exchangerates_tables_table_date_get() {
     dbg!(
         api::exchangerates_tables_table_date_get(&Configuration::new(), TableType::A, "2025-06-10")
             .await
-            .unwrap()
+            .expect("Querying exchange rates for a given date failed.")   
     );
 }
 
@@ -102,4 +102,13 @@ async fn test_exchangerates_rates_table_code_last_top_count_get() {
             .expect("Querying last {topCount} exchange rates tables failed.")
         );
     }
+}
+
+#[tokio::test]
+async fn test_exchangerates_tables_table_today_get() {
+    dbg!(
+        api::exchangerates_tables_table_today_get(&Configuration::new(), TableType::A)
+            .await
+            .expect("Querying today's exchange rates tables failed.")
+    );
 }
