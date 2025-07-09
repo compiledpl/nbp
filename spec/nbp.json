@@ -112,6 +112,37 @@
         }
       }
     },
+    "/exchangerates/tables/{table}/today": {
+      "summary": "Today's table of currency conversion rates",
+      "get": {
+        "parameters": [
+          {
+            "name": "table",
+            "in": "path",
+            "description": "The table type to query. There are types A, B and C",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/TableType"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Today's currency conversion rates",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/CurrencyExchangeTable"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/exchangerates/tables/{table}/{date}/": {
       "summary": "Currency conversion rates for a given date",
       "get": {
