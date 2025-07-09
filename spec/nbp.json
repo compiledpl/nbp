@@ -112,6 +112,90 @@
         }
       }
     },
+    "/exchangerates/tables/{table}/{date}/": {
+      "summary": "Currency conversion rates for a given date",
+      "get": {
+        "parameters": [
+          {
+            "name": "table",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/TableType"
+            }
+          },
+          {
+            "name": "date",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Currency conversion rates",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/CurrencyExchangeTable"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/exchangerates/rates/{table}/{code}/last/{topCount}/": {
+      "summary": "Last `topCount` rates from the requested table and code",
+      "get": {
+        "parameters": [
+          {
+            "name": "table",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/TableType"
+            }
+          },
+          {
+            "name": "code",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "topCount",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Last `topCount` rates from the requested table and code",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "items": {
+                    "$ref": "#/components/schemas/ExchangeRate"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/exchangerates/rates/{table}/{code}/": {
       "summary": "Currency conversion rates for a specific currency",
       "get": {
@@ -188,6 +272,106 @@
         }
       }
     },
+    "/exchangerates/rates/{table}/{code}/{date}/": {
+      "summary": "Currency conversion rate for a given date",
+      "get": {
+        "parameters": [
+          {
+            "name": "table",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/TableType"
+            }
+          },
+          {
+            "name": "code",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "date",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Currency conversion rate",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "items": {
+                    "$ref": "#/components/schemas/ExchangeRate"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/exchangerates/rates/{table}/{code}/{startDate}/{endDate}/": {
+      "summary": "Currency conversion rates for a given date range",
+      "get": {
+        "parameters": [
+          {
+            "name": "table",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/TableType"
+            }
+          },
+          {
+            "name": "code",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "startDate",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "endDate",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Currency conversion rates",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "items": {
+                    "$ref": "#/components/schemas/ExchangeRate"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/exchangerates/tables/{table}/last/{topCount}/": {
       "summary": "Last `topCount` rates from the requested table",
       "get": {
@@ -206,6 +390,52 @@
             "required": true,
             "schema": {
               "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Currency conversion rates",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/CurrencyExchangeTable"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/exchangerates/tables/{table}/{startDate}/{endDate}/": {
+      "summary": "Currency conversion rates for a given table and date range",
+      "get": {
+        "parameters": [
+          {
+            "name": "table",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/TableType"
+            }
+          },
+          {
+            "name": "startDate",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "endDate",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
             }
           }
         ],
@@ -263,6 +493,102 @@
           },
           "404": {
             "description": "Lack of data (gold price has not been published today)"
+          }
+        }
+      }
+    },
+    "/cenyzlota/{date}/": {
+      "get": {
+        "parameters": [
+          {
+            "name": "date",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Gold price for a given date",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/GoldPrice"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/cenyzlota/{startDate}/{endDate}/": {
+      "summary": "Gold price for a given date range",
+      "get": {
+        "parameters": [
+          {
+            "name": "startDate",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "endDate",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Gold price for a given date range",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/GoldPrice"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/cenyzlota/last/{topCount}": {
+      "get": {
+        "parameters": [
+          {
+            "name": "topCount",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Last `topCount` gold prices",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/GoldPrice"
+                  }
+                }
+              }
+            }
           }
         }
       }
