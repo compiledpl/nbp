@@ -3,7 +3,7 @@ use nbp::models::table_type::TableType;
 
 #[tokio::test]
 async fn exchange_rates_get_table() {
-    let client = nbp::client::NbpClient::new();
+    let client = nbp::client::NbpClient::default();
     dbg!(
         client
             .exchange_rates()

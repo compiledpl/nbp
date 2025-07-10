@@ -24,16 +24,6 @@ impl GetTablesBuilder<NoDateParameter> {
         }
     }
 
-    pub fn top_count(self, count: u8) -> Self {
-        GetTablesBuilder {
-            service_client: self.service_client,
-            table_type: self.table_type,
-            date_parameter: self.date_parameter,
-            top_count: Some(count),
-            _state: PhantomData,
-        }
-    }
-
     pub fn today(self) -> GetTablesBuilder<WithDateParameter> {
         GetTablesBuilder {
             service_client: self.service_client,
@@ -74,6 +64,18 @@ impl GetTablesBuilder<NoDateParameter> {
             table_type: self.table_type,
             date_parameter: Some(DateParameter::DateRange(start_date, end_date)),
             top_count: self.top_count,
+            _state: PhantomData,
+        }
+    }
+}
+
+impl GetTablesBuilder<WithDateParameter> {
+    pub fn top_count(self, count: u8) -> Self {
+        GetTablesBuilder {
+            service_client: self.service_client,
+            table_type: self.table_type,
+            date_parameter: self.date_parameter,
+            top_count: Some(count),
             _state: PhantomData,
         }
     }

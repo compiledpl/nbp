@@ -13,8 +13,8 @@ pub struct NbpClient {
     paths: Arc<Paths>,
 }
 
-impl NbpClient {
-    pub fn new() -> Self {
+impl Default for NbpClient {
+    fn default() -> Self {
         let base_url =
             Url::parse(NBP_DEFAULT_BASE_URL).expect("Failed to parse NBP default base URL");
         NbpClient {
@@ -22,7 +22,9 @@ impl NbpClient {
             paths: Arc::new(Paths::default()),
         }
     }
+}
 
+impl NbpClient {
     pub fn base_url(&self) -> &Url {
         &self.base_url
     }
