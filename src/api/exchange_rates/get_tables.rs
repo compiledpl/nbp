@@ -34,7 +34,7 @@ impl GetTablesBuilder<NoDateParameter> {
         }
     }
 
-    pub fn last_day(self) -> GetTablesBuilder<WithDateParameter> {
+    pub fn last(self) -> GetTablesBuilder<WithDateParameter> {
         GetTablesBuilder {
             service_client: self.service_client,
             table_type: self.table_type,

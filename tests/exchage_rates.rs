@@ -18,7 +18,7 @@ async fn exchange_rates_get_table() {
         client
             .exchange_rates()
             .tables(TableType::A)
-            .last_day()
+            .last()
             .send()
             .await
             .unwrap()
