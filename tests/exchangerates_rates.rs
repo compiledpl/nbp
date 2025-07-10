@@ -84,7 +84,7 @@ async fn test_exchangerates_tables_table_date_get() {
     dbg!(
         api::exchangerates_tables_table_date_get(&Configuration::new(), TableType::A, "2025-06-10")
             .await
-            .expect("Querying exchange rates for a given date failed.")   
+            .expect("Querying exchange rates for a given date failed.")
     );
 }
 
