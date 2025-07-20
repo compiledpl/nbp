@@ -1,27 +1,36 @@
 use serde::{Deserialize, Serialize};
+use std::fmt::Display;
+use std::str::FromStr;
 
-#[derive(Clone, Copy, Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Serialize, Deserialize)]
+#[derive(
+    Default, Clone, Copy, Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Serialize, Deserialize,
+)]
 pub enum TableType {
-    #[serde(rename = "A")]
+    #[default]
     A,
-    #[serde(rename = "B")]
     B,
-    #[serde(rename = "C")]
     C,
 }
 
-impl std::fmt::Display for TableType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+impl Display for TableType {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
-            Self::A => write!(f, "A"),
-            Self::B => write!(f, "B"),
-            Self::C => write!(f, "C"),
+            TableType::A => write!(f, "A"),
+            TableType::B => write!(f, "B"),
+            TableType::C => write!(f, "C"),
         }
     }
 }
 
-impl Default for TableType {
-    fn default() -> TableType {
-        Self::A
+impl FromStr for TableType {
+    type Err = String;
+
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "A" => Ok(TableType::A),
+            "B" => Ok(TableType::B),
+            "C" => Ok(TableType::C),
+            _ => Err(format!("Invalid table type: {}", s)),
+        }
     }
 }

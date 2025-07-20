@@ -1,55 +1,60 @@
 use crate::client::service_client::ServiceClient;
 use crate::models::date_parameters::{DateParameter, NoDateParameter, WithDateParameter};
+use crate::models::exchange_rates::CurrencyExchangeTable;
 use crate::models::table_type::TableType;
-use crate::nbp_error::{NbpError, NbpResult};
+use crate::nbp_error::NbpResult;
 use chrono::NaiveDate;
 use std::marker::PhantomData;
 
 pub struct GetTablesBuilder<State> {
+    route: String,
     service_client: ServiceClient,
-    table_type: TableType,
     date_parameter: Option<DateParameter>,
-    top_count: Option<u8>,
     _state: PhantomData<State>,
 }
 
 impl GetTablesBuilder<NoDateParameter> {
     pub fn new(service_client: ServiceClient, table_type: TableType) -> Self {
         Self {
+            route: format!("tables/{}", table_type),
             service_client: service_client.clone(),
-            table_type,
             date_parameter: None,
-            top_count: None,
             _state: PhantomData,
         }
     }
 
     pub fn today(self) -> GetTablesBuilder<WithDateParameter> {
         GetTablesBuilder {
+            route: self.route,
             service_client: self.service_client,
-            table_type: self.table_type,
             date_parameter: Some(DateParameter::Today),
-            top_count: self.top_count,
             _state: PhantomData,
         }
     }
 
-    pub fn last(self) -> GetTablesBuilder<WithDateParameter> {
+    pub fn last_day(self) -> GetTablesBuilder<WithDateParameter> {
         GetTablesBuilder {
+            route: self.route,
             service_client: self.service_client,
-            table_type: self.table_type,
             date_parameter: Some(DateParameter::LastDay),
-            top_count: self.top_count,
+            _state: PhantomData,
+        }
+    }
+
+    pub fn last_days(self, days_number: u8) -> GetTablesBuilder<WithDateParameter> {
+        GetTablesBuilder {
+            route: self.route,
+            service_client: self.service_client,
+            date_parameter: Some(DateParameter::LastDays(days_number)),
             _state: PhantomData,
         }
     }
 
     pub fn date(self, date: NaiveDate) -> GetTablesBuilder<WithDateParameter> {
         GetTablesBuilder {
+            route: self.route,
             service_client: self.service_client,
-            table_type: self.table_type,
             date_parameter: Some(DateParameter::Date(date)),
-            top_count: self.top_count,
             _state: PhantomData,
         }
     }
@@ -60,64 +65,24 @@ impl GetTablesBuilder<NoDateParameter> {
         end_date: NaiveDate,
     ) -> GetTablesBuilder<WithDateParameter> {
         GetTablesBuilder {
+            route: self.route,
             service_client: self.service_client,
-            table_type: self.table_type,
             date_parameter: Some(DateParameter::DateRange(start_date, end_date)),
-            top_count: self.top_count,
-            _state: PhantomData,
-        }
-    }
-}
-
-impl GetTablesBuilder<WithDateParameter> {
-    pub fn top_count(self, count: u8) -> Self {
-        GetTablesBuilder {
-            service_client: self.service_client,
-            table_type: self.table_type,
-            date_parameter: self.date_parameter,
-            top_count: Some(count),
             _state: PhantomData,
         }
     }
 }
 
 impl<State> GetTablesBuilder<State> {
-    pub async fn send(self) -> NbpResult<String> {
-        let mut route = format!("tables/{}", self.table_type);
-
-        match self.date_parameter {
-            Some(DateParameter::Today) => route.push_str("/today"),
-            Some(DateParameter::LastDay) => route.push_str("/last"),
-            Some(DateParameter::Date(date)) => {
-                route.push('/');
-                route.push_str(&date.to_string());
-            }
-            Some(DateParameter::DateRange(start_date, end_date)) => {
-                route.push('/');
-                route.push_str(&start_date.to_string());
-                route.push('/');
-                route.push_str(&end_date.to_string());
-            }
-            None => {}
-        }
-
-        if let Some(count) = self.top_count {
-            route.push_str(&format!("/{count}"));
-        }
-
-        let response = self
-            .service_client
-            .get_http_client()
-            .get(self.service_client.get_base_url().join(&route).unwrap())
-            .send()
+    pub async fn send(self) -> NbpResult<Vec<CurrencyExchangeTable>> {
+        self.service_client
+            .get(self.route, self.date_parameter)
             .await
-            .map_err(|e| NbpError::request_failed(e.to_string()))?;
-
-        let result = response
-            .text()
-            .await
-            .map_err(|e| NbpError::cannot_deserialize_body(e.to_string()))?;
-
-        Ok(result)
     }
 }
+
+// TODO error handling
+// TODO tests
+// TODO code cleanup
+// TODO documentation
+// TODO
