@@ -14,11 +14,102 @@ pub struct CurrencyExchangeTable {
 }
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
 pub struct ExchangeRate {
     pub code: CurrencyCode,
     pub bid: Option<f64>,
     pub ask: Option<f64>,
     pub mid: Option<f64>,
+}
+
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct CurrencyExchangeRates {
+    pub table: TableType,
+    pub code: CurrencyCode,
+    pub rates: Vec<ExchangeRateRecord>,
+}
+
+#[derive(Clone, Debug, PartialEq)]
+pub struct ExchangeRateRecord {
+    pub no: String,
+    pub effective_date: NaiveDate,
+    pub bid: Option<f64>,
+    pub ask: Option<f64>,
+    pub mid: Option<f64>,
+}
+
+impl<'de> Deserialize<'de> for ExchangeRateRecord {
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: serde::Deserializer<'de>,
+    {
+        let mut map = serde_json::Map::deserialize(deserializer)?;
+
+        let no = map
+            .remove("no")
+            .and_then(|v| v.as_str().map(|s| s.to_string()))
+            .ok_or_else(|| serde::de::Error::missing_field("no"))?;
+
+        let effective_date_str = map
+            .remove("effectiveDate")
+            .and_then(|v| v.as_str().map(|s| s.to_string()))
+            .ok_or_else(|| serde::de::Error::missing_field("effectiveDate"))?;
+        let effective_date = NaiveDate::parse_from_str(&effective_date_str, "%Y-%m-%d")
+            .map_err(serde::de::Error::custom)?;
+
+        let bid = map.remove("bid").and_then(|v| v.as_f64());
+
+        let ask = map.remove("ask").and_then(|v| v.as_f64());
+
+        let mid = map.remove("mid").and_then(|v| v.as_f64());
+
+        Ok(ExchangeRateRecord {
+            no,
+            effective_date,
+            bid,
+            ask,
+            mid,
+        })
+    }
+}
+
+impl Serialize for ExchangeRateRecord {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        let mut map = serde_json::Map::new();
+
+        map.insert("no".to_string(), serde_json::Value::String(self.no.clone()));
+        map.insert(
+            "effectiveDate".to_string(),
+            serde_json::Value::String(self.effective_date.to_string()),
+        );
+
+        if let Some(bid) = self.bid {
+            map.insert(
+                "bid".to_string(),
+                serde_json::Value::Number(serde_json::Number::from_f64(bid).unwrap()),
+            );
+        }
+
+        if let Some(ask) = self.ask {
+            map.insert(
+                "ask".to_string(),
+                serde_json::Value::Number(serde_json::Number::from_f64(ask).unwrap()),
+            );
+        }
+
+        if let Some(mid) = self.mid {
+            map.insert(
+                "mid".to_string(),
+                serde_json::Value::Number(serde_json::Number::from_f64(mid).unwrap()),
+            );
+        }
+
+        map.serialize(serializer)
+    }
 }
 
 impl<'de> Deserialize<'de> for CurrencyExchangeTable {

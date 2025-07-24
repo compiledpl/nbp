@@ -1,11 +1,12 @@
+mod get_rates;
 mod get_tables;
-// mod get_rates;
 
+use crate::api::exchange_rates::get_rates::GetRatesBuilder;
 use crate::api::exchange_rates::get_tables::GetTablesBuilder;
 use crate::client::NbpClient;
 use crate::client::service_client::ServiceClient;
+use crate::models::currency_code::CurrencyCode;
 use crate::models::date_parameters::NoDateParameter;
-// use crate::models::currency_code::CurrencyCode;
 use crate::models::table_type::TableType;
 
 pub struct ExchangeRatesHandler {
@@ -31,7 +32,11 @@ impl ExchangeRatesHandler {
         GetTablesBuilder::new(self.client.clone(), table)
     }
 
-    // pub async fn rates(&self, currency: CurrencyCode) -> GetRatesBuilder<NoDateParameter> {
-    //     GetRatesBuilder::new(self, currency)
-    // }
+    pub fn rates(
+        &self,
+        table: TableType,
+        currency: CurrencyCode,
+    ) -> GetRatesBuilder<NoDateParameter> {
+        GetRatesBuilder::new(self.client.clone(), table, currency)
+    }
 }

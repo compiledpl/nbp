@@ -1,4 +1,5 @@
 use chrono::NaiveDate;
+use nbp::models::currency_code::CurrencyCode;
 use nbp::models::table_type::TableType;
 
 #[tokio::test]
@@ -62,6 +63,41 @@ async fn exchange_rates_get_table() {
                 NaiveDate::from_ymd_opt(2024, 10, 1).unwrap(),
                 NaiveDate::from_ymd_opt(2024, 10, 5).unwrap()
             )
+            .send()
+            .await
+            .unwrap()
+    );
+}
+
+#[tokio::test]
+async fn exchange_rates_get_rates() {
+    let client = nbp::client::NbpClient::default();
+
+    dbg!(
+        client
+            .exchange_rates()
+            .rates(TableType::A, CurrencyCode::USD)
+            .last_days(5)
+            .send()
+            .await
+            .unwrap()
+    );
+
+    dbg!(
+        client
+            .exchange_rates()
+            .rates(TableType::A, CurrencyCode::EUR)
+            .last_day()
+            .send()
+            .await
+            .unwrap()
+    );
+
+    dbg!(
+        client
+            .exchange_rates()
+            .rates(TableType::A, CurrencyCode::GBP)
+            .date(NaiveDate::from_ymd_opt(2024, 10, 1).unwrap())
             .send()
             .await
             .unwrap()
