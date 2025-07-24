@@ -1,4 +1,5 @@
 mod get_tables;
+// mod get_rates;
 
 use crate::api::exchange_rates::get_tables::GetTablesBuilder;
 use crate::client::NbpClient;
@@ -30,7 +31,7 @@ impl ExchangeRatesHandler {
         GetTablesBuilder::new(self.client.clone(), table)
     }
 
-    // pub async fn rates(&self, table_type: TableType, currency: CurrencyCode) -> NbpResult<GetRatesBuilder> {
+    // pub async fn rates(&self, currency: CurrencyCode) -> GetRatesBuilder<NoDateParameter> {
     //     GetRatesBuilder::new(self, currency)
     // }
 }

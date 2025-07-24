@@ -14,7 +14,7 @@ pub struct GetTablesBuilder<State> {
 
 impl GetTablesBuilder<NoDateParameter> {
     pub fn new(mut service_client: ServiceClient, table_type: TableType) -> Self {
-        service_client.join_path(&format!("tables/{}", table_type));
+        service_client.join_path(&format!("tables/{}/", table_type));
 
         Self {
             service_client,

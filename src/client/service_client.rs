@@ -2,7 +2,7 @@ use crate::nbp_error::{NbpError, NbpResult};
 use reqwest::Client;
 use url::Url;
 
-#[derive(Clone)]
+#[derive(Clone, Debug)]
 pub struct ServiceClient {
     http_client: Client,
     base_url: Url,

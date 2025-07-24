@@ -56,7 +56,7 @@ impl<'de> Deserialize<'de> for CurrencyExchangeTable {
 
         let rates = rates_array
             .iter()
-            .map(|v| ExchangeRate::deserialize(v))
+            .map(ExchangeRate::deserialize)
             .collect::<Result<Vec<_>, _>>()
             .map_err(serde::de::Error::custom)?;
 

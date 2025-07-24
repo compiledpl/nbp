@@ -13,10 +13,10 @@ impl DateParameter {
         match self {
             DateParameter::Today => "today".to_string(),
             DateParameter::LastDay => "last".to_string(),
-            DateParameter::LastDays(days_number) => format!("last/{}", days_number),
-            DateParameter::Date(date) => date.to_string(),
+            DateParameter::LastDays(days_number) => format!("last/{}/", days_number),
+            DateParameter::Date(date) => format!("{}/", date),
             DateParameter::DateRange(start_date, end_date) => {
-                format!("{}/{}", start_date, end_date)
+                format!("{}/{}/", start_date, end_date)
             }
         }
     }
