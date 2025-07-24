@@ -1,7 +1,6 @@
 use crate::models::currency_code::CurrencyCode;
 use crate::models::table_type::TableType;
 use chrono::NaiveDate;
-use rust_decimal::Decimal;
 use serde::{Deserialize, Serialize};
 use std::str::FromStr;
 
@@ -17,9 +16,9 @@ pub struct CurrencyExchangeTable {
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct ExchangeRate {
     pub code: CurrencyCode,
-    pub bid: Option<Decimal>,
-    pub ask: Option<Decimal>,
-    pub mid: Option<Decimal>,
+    pub bid: Option<f64>,
+    pub ask: Option<f64>,
+    pub mid: Option<f64>,
 }
 
 impl<'de> Deserialize<'de> for CurrencyExchangeTable {
