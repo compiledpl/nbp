@@ -3,161 +3,309 @@ use std::fmt;
 
 #[derive(Clone, Copy, Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Serialize, Deserialize)]
 pub enum CurrencyCode {
-    // Table A and C currencies (main currencies with bid/ask rates)
+    /// Polish Zloty (Table A and C)
     PLN,
+    /// United States Dollar (Table A and C)
     USD,
+    /// Euro (Table A and C)
     EUR,
+    /// British Pound Sterling (Table A and C)
     GBP,
+    /// Swiss Franc (Table A and C)
     CHF,
+    /// Australian Dollar (Table A and C)
     AUD,
+    /// Canadian Dollar (Table A and C)
     CAD,
+    /// Hungarian Forint (Table A and C)
     HUF,
+    /// Japanese Yen (Table A and C)
     JPY,
+    /// Czech Koruna (Table A and C)
     CZK,
+    /// Danish Krone (Table A and C)
     DKK,
+    /// Norwegian Krone (Table A and C)
     NOK,
+    /// Swedish Krona (Table A and C)
     SEK,
+    /// Special Drawing Rights (IMF) (Table A and C)
     XDR,
 
-    // Table A only currencies (mid rates only)
+    /// Thai Baht (Table A)
     THB,
+    /// Hong Kong Dollar (Table A)
     HKD,
+    /// New Zealand Dollar (Table A)
     NZD,
+    /// Singapore Dollar (Table A)
     SGD,
+    /// Ukrainian Hryvnia (Table A)
     UAH,
+    /// Icelandic Króna (Table A)
     ISK,
+    /// Romanian Leu (Table A)
     RON,
+    /// Bulgarian Lev (Table A)
     BGN,
+    /// Turkish Lira (Table A)
     TRY,
+    /// Israeli New Shekel (Table A)
     ILS,
+    /// Chilean Peso (Table A)
     CLP,
+    /// Philippine Peso (Table A)
     PHP,
+    /// Mexican Peso (Table A)
     MXN,
+    /// South African Rand (Table A)
     ZAR,
+    /// Brazilian Real (Table A)
     BRL,
+    /// Malaysian Ringgit (Table A)
     MYR,
+    /// Indonesian Rupiah (Table A)
     IDR,
+    /// Indian Rupee (Table A)
     INR,
+    /// South Korean Won (Table A)
     KRW,
+    /// Chinese Yuan Renminbi (Table A)
     CNY,
 
-    // Table B currencies (additional currencies)
+    /// Afghan Afghani (Table B)
     AFN,
+    /// Malagasy Ariary (Table B)
     MGA,
+    /// Venezuelan Bolívar Soberano (Table B)
     VES,
+    /// Bolivian Boliviano (Table B)
     BOB,
+    /// Costa Rican Colón (Table B)
     CRC,
+    /// Salvadoran Colón (Table B)
     SVC,
+    /// Nicaraguan Córdoba Oro (Table B)
     NIO,
+    /// Gambian Dalasi (Table B)
     GMD,
+    /// Macedonian Denar (Table B)
     MKD,
+    /// Algerian Dinar (Table B)
     DZD,
+    /// Bahraini Dinar (Table B)
     BHD,
+    /// Iraqi Dinar (Table B)
     IQD,
+    /// Jordanian Dinar (Table B)
     JOD,
+    /// Kuwaiti Dinar (Table B)
     KWD,
+    /// Libyan Dinar (Table B)
     LYD,
+    /// Serbian Dinar (Table B)
     RSD,
+    /// Tunisian Dinar (Table B)
     TND,
+    /// Moroccan Dirham (Table B)
     MAD,
+    /// UAE Dirham (Table B)
     AED,
+    /// São Tomé and Príncipe Dobra (Table B)
     STN,
+    /// Bahamian Dollar (Table B)
     BSD,
+    /// Barbadian Dollar (Table B)
     BBD,
+    /// Belize Dollar (Table B)
     BZD,
+    /// Brunei Dollar (Table B)
     BND,
+    /// Fijian Dollar (Table B)
     FJD,
+    /// Guyanese Dollar (Table B)
     GYD,
+    /// Jamaican Dollar (Table B)
     JMD,
+    /// Liberian Dollar (Table B)
     LRD,
+    /// Namibian Dollar (Table B)
     NAD,
+    /// Surinamese Dollar (Table B)
     SRD,
+    /// Trinidad and Tobago Dollar (Table B)
     TTD,
+    /// East Caribbean Dollar (Table B)
     XCD,
+    /// Solomon Islands Dollar (Table B)
     SBD,
+    /// Vietnamese Dong (Table B)
     VND,
+    /// Armenian Dram (Table B)
     AMD,
+    /// Cape Verdean Escudo (Table B)
     CVE,
+    /// Aruban Florin (Table B)
     AWG,
+    /// Burundian Franc (Table B)
     BIF,
+    /// CFA Franc BCEAO (Table B)
     XOF,
+    /// CFA Franc BEAC (Table B)
     XAF,
+    /// CFP Franc (Table B)
     XPF,
+    /// Djiboutian Franc (Table B)
     DJF,
+    /// Guinean Franc (Table B)
     GNF,
+    /// Comorian Franc (Table B)
     KMF,
+    /// Congolese Franc (Table B)
     CDF,
+    /// Rwandan Franc (Table B)
     RWF,
+    /// Egyptian Pound (Table B)
     EGP,
+    /// Gibraltar Pound (Table B)
     GIP,
+    /// Lebanese Pound (Table B)
     LBP,
+    /// South Sudanese Pound (Table B)
     SSP,
+    /// Sudanese Pound (Table B)
     SDG,
+    /// Syrian Pound (Table B)
     SYP,
+    /// Ghanaian Cedi (Table B)
     GHS,
+    /// Haitian Gourde (Table B)
     HTG,
+    /// Paraguayan Guaraní (Table B)
     PYG,
+    /// Caribbean Guilder (Table B)
     XCG,
+    /// Papua New Guinean Kina (Table B)
     PGK,
+    /// Lao Kip (Table B)
     LAK,
+    /// Malawian Kwacha (Table B)
     MWK,
+    /// Zambian Kwacha (Table B)
     ZMW,
+    /// Angolan Kwanza (Table B)
     AOA,
+    /// Myanmar Kyat (Table B)
     MMK,
+    /// Georgian Lari (Table B)
     GEL,
+    /// Moldovan Leu (Table B)
     MDL,
+    /// Albanian Lek (Table B)
     ALL,
+    /// Honduran Lempira (Table B)
     HNL,
+    /// Sierra Leonean Leone (Table B)
     SLE,
+    /// Eswatini Lilangeni (Table B)
     SZL,
+    /// Lesotho Loti (Table B)
     LSL,
+    /// Azerbaijani Manat (Table B)
     AZN,
+    /// Mozambican Metical (Table B)
     MZN,
+    /// Nigerian Naira (Table B)
     NGN,
+    /// Eritrean Nakfa (Table B)
     ERN,
+    /// New Taiwan Dollar (Table B)
     TWD,
+    /// Turkmenistan Manat (Table B)
     TMT,
+    /// Mauritanian Ouguiya (Table B)
     MRU,
+    /// Tongan Pa'anga (Table B)
     TOP,
+    /// Macanese Pataca (Table B)
     MOP,
+    /// Argentine Peso (Table B)
     ARS,
+    /// Dominican Peso (Table B)
     DOP,
+    /// Colombian Peso (Table B)
     COP,
+    /// Cuban Peso (Table B)
     CUP,
+    /// Uruguayan Peso (Table B)
     UYU,
+    /// Botswana Pula (Table B)
     BWP,
+    /// Guatemalan Quetzal (Table B)
     GTQ,
+    /// Iranian Rial (Table B)
     IRR,
+    /// Yemeni Rial (Table B)
     YER,
+    /// Qatari Rial (Table B)
     QAR,
+    /// Omani Rial (Table B)
     OMR,
+    /// Saudi Riyal (Table B)
     SAR,
+    /// Cambodian Riel (Table B)
     KHR,
+    /// Belarusian Ruble (Table B)
     BYN,
+    /// Russian Ruble (Table B)
     RUB,
+    /// Sri Lankan Rupee (Table B)
     LKR,
+    /// Maldivian Rufiyaa (Table B)
     MVR,
+    /// Mauritian Rupee (Table B)
     MUR,
+    /// Nepalese Rupee (Table B)
     NPR,
+    /// Pakistani Rupee (Table B)
     PKR,
+    /// Seychellois Rupee (Table B)
     SCR,
+    /// Peruvian Sol (Table B)
     PEN,
+    /// Kyrgyzstani Som (Table B)
     KGS,
+    /// Tajikistani Somoni (Table B)
     TJS,
+    /// Uzbekistani Sum (Table B)
     UZS,
+    /// Kenyan Shilling (Table B)
     KES,
+    /// Somali Shilling (Table B)
     SOS,
+    /// Tanzanian Shilling (Table B)
     TZS,
+    /// Ugandan Shilling (Table B)
     UGX,
+    /// Bangladeshi Taka (Table B)
     BDT,
+    /// Samoan Tālā (Table B)
     WST,
+    /// Kazakhstani Tenge (Table B)
     KZT,
+    /// Mongolian Tögrög (Table B)
     MNT,
+    /// Vanuatu Vatu (Table B)
     VUV,
+    /// Bosnia and Herzegovina Convertible Mark (Table B)
     BAM,
+    /// Zimbabwe Gold (Table B)
     ZWG,
+    /// Panamanian Balboa (Table B)
     PAB,
+    /// Ethiopian Birr (Table B)
     ETB,
+    //TODO What about archive currencies?
 }
 
 impl CurrencyCode {

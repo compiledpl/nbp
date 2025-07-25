@@ -96,6 +96,17 @@ async fn exchange_rates_get_rates() {
     dbg!(
         client
             .exchange_rates()
+            .rates(TableType::C, CurrencyCode::EUR)
+            .last_day()
+            .send()
+            .await
+            .unwrap()
+    );
+    
+
+    dbg!(
+        client
+            .exchange_rates()
             .rates(TableType::A, CurrencyCode::GBP)
             .date(NaiveDate::from_ymd_opt(2024, 10, 1).unwrap())
             .send()
