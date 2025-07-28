@@ -310,7 +310,6 @@ pub enum CurrencyCode {
     Other(String),
 }
 
-
 impl<'de> serde::Deserialize<'de> for CurrencyCode {
     fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
     where
