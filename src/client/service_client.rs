@@ -1,5 +1,5 @@
 use crate::nbp_error::{NbpError, NbpResult};
-use reqwest::Client;
+use reqwest::{Client, StatusCode};
 use url::Url;
 
 #[derive(Clone, Debug)]
@@ -43,25 +43,39 @@ impl ServiceClient {
                 ))
             })?;
 
-        if !response.status().is_success() {
-            return Err(NbpError::request_failed(format!(
-                "Request failed for route {}: {}",
-                self.base_url,
-                response.status()
-            )));
+        match response.status() {
+            StatusCode::NOT_FOUND => {
+                return Err(NbpError::not_found(format!(
+                    "Resource not found for route {}",
+                    self.base_url
+                )));
+            }
+            StatusCode::BAD_REQUEST => {
+                return Err(NbpError::bad_request(format!(
+                    "Bad request for route {}",
+                    self.base_url
+                )));
+            }
+            StatusCode::INTERNAL_SERVER_ERROR => {
+                return Err(NbpError::internal_error(format!(
+                    "Internal server error for route {}",
+                    self.base_url
+                )));
+            }
+            status if status.is_success() => {}
+            status => {
+                return Err(NbpError::request_failed(format!(
+                    "Request failed with status {} for route {}",
+                    status, self.base_url
+                )));
+            }
         }
 
-        response
-            .text()
-            .await
-            .map_err(|e| NbpError::request_failed(format!("Failed to read response text: {}", e)))
-            .and_then(|text| {
-                serde_json::from_str(&text).map_err(|e| {
-                    NbpError::cannot_deserialize_body(format!(
-                        "Failed to deserialize response for route {}: {}",
-                        self.base_url, e
-                    ))
-                })
-            })
+        response.json::<T>().await.map_err(|e| {
+            NbpError::cannot_deserialize_body(format!(
+                "Failed to deserialize response for route {}: {}",
+                self.base_url, e
+            ))
+        })
     }
 }

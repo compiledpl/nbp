@@ -38,6 +38,5 @@ impl ExchangeRatesHandler {
         currency: CurrencyCode,
     ) -> GetRatesBuilder<NoDateParameter> {
         GetRatesBuilder::new(self.client.clone(), table, currency)
-        //TODO: consider removing table and match table-currency automatically or add some builder method like trading() or just new handler method trading_rates()
     }
 }
