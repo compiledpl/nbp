@@ -25,7 +25,7 @@ impl ServiceClient {
 
     pub fn join_path(&mut self, path: &str) -> NbpResult<()> {
         self.base_url = self.base_url.join(path).map_err(|e| {
-            NbpError::invalid_argument(format!("Failed to join path '{}': {}", path, e))
+            NbpError::InvalidArgument(format!("Failed to join path '{}': {}", path, e))
         })?;
         Ok(())
     }
@@ -39,43 +39,35 @@ impl ServiceClient {
             .get(self.base_url.clone())
             .send()
             .await
-            .map_err(|e| {
-                NbpError::request_failed(format!(
-                    "Request failed for route {}: {}",
-                    self.base_url, e
-                ))
-            })?;
+            .map_err(|e| NbpError::RequestFailed(e.to_string()))?;
 
         match response.status() {
             StatusCode::NOT_FOUND => {
-                return Err(NbpError::not_found(format!(
+                return Err(NbpError::NotFound(format!(
                     "Resource not found for route {}",
                     self.base_url
                 )));
             }
             StatusCode::BAD_REQUEST => {
-                return Err(NbpError::bad_request(format!(
+                return Err(NbpError::BadRequest(format!(
                     "Bad request for route {}",
                     self.base_url
                 )));
             }
             StatusCode::INTERNAL_SERVER_ERROR => {
-                return Err(NbpError::internal_error(format!(
+                return Err(NbpError::InternalError(format!(
                     "Internal server error for route {}",
                     self.base_url
                 )));
             }
             status if status.is_success() => {}
             status => {
-                return Err(NbpError::request_failed(format!(
-                    "Request failed with status {} for route {}",
-                    status, self.base_url
-                )));
+                return Err(NbpError::HttpError(status.as_u16()));
             }
         }
 
         response.json::<T>().await.map_err(|e| {
-            NbpError::cannot_deserialize_body(format!(
+            NbpError::CannotDeserializeBody(format!(
                 "Failed to deserialize response for route {}: {}",
                 self.base_url, e
             ))

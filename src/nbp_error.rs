@@ -1,5 +1,4 @@
-use serde::{Deserialize, Serialize};
-use std::fmt::{Display, Formatter};
+use thiserror::Error;
 
 pub type NbpResult<T> = Result<T, NbpError>;
 
@@ -8,76 +7,32 @@ pub type NbpResult<T> = Result<T, NbpError>;
 /// Represents various types of errors that can occur when interacting
 /// with the NBP API, including network errors, parsing errors, and
 /// API-specific errors.
-#[derive(Debug, Clone, PartialEq, Eq)]
-pub struct NbpError {
-    r#type: ErrorType,
-    context: String,
-}
+#[derive(Error, Debug)]
+pub enum NbpError {
+    #[error("Failed to deserialize response body: {0}")]
+    CannotDeserializeBody(String),
 
-#[derive(Copy, Clone, Debug, PartialEq, Eq, Serialize, Deserialize)]
-pub enum ErrorType {
-    CannotDeserializeBody,
-    RequestFailed,
-    InvalidArgument,
-    NotFound,
-    BadRequest,
-    InternalError,
-}
+    #[error("Request failed: {0}")]
+    RequestFailed(String),
 
-impl Display for NbpError {
-    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
-        write!(f, "Error: {:?} - {}", self.r#type, self.context)
-    }
-}
+    #[error("Invalid argument: {0}")]
+    InvalidArgument(String),
 
-impl std::error::Error for NbpError {}
+    #[error("Resource not found: {0}")]
+    NotFound(String),
 
-impl NbpError {
-    /// Creates a new error indicating that a request failed.
-    pub fn request_failed(context: String) -> Self {
-        NbpError {
-            r#type: ErrorType::RequestFailed,
-            context,
-        }
-    }
+    #[error("Bad request: {0}")]
+    BadRequest(String),
 
-    /// Creates a new error indicating that the response body could not be deserialized.
-    pub fn cannot_deserialize_body(context: String) -> Self {
-        NbpError {
-            r#type: ErrorType::CannotDeserializeBody,
-            context,
-        }
-    }
+    #[error("Internal server error: {0}")]
+    InternalError(String),
 
-    /// Creates a new error indicating that an invalid argument was provided.
-    pub fn invalid_argument(context: String) -> Self {
-        NbpError {
-            r#type: ErrorType::InvalidArgument,
-            context,
-        }
-    }
+    #[error("HTTP error: {0}")]
+    HttpError(u16),
 
-    /// Creates a new error indicating that a resource was not found.
-    pub fn not_found(context: String) -> Self {
-        NbpError {
-            r#type: ErrorType::NotFound,
-            context,
-        }
-    }
+    #[error("URL parsing error: {0}")]
+    UrlError(#[from] url::ParseError),
 
-    /// Creates a new error indicating that a bad request was made.
-    pub fn bad_request(context: String) -> Self {
-        NbpError {
-            r#type: ErrorType::BadRequest,
-            context,
-        }
-    }
-
-    /// Creates a new error indicating an internal server error.
-    pub fn internal_error(context: String) -> Self {
-        NbpError {
-            r#type: ErrorType::InternalError,
-            context,
-        }
-    }
+    #[error("Serialization error: {0}")]
+    SerializationError(#[from] serde_json::Error),
 }

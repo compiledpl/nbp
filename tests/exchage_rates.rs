@@ -359,8 +359,8 @@ mod exchange_rates_edge_cases {
         );
         let error = result.unwrap_err();
         assert!(
-            error.to_string().contains("NotFound"),
-            "Error should be NotFound: {}",
+            error.to_string().contains("Resource not found"),
+            "Error should be Resource not found: {}",
             error
         );
     }
@@ -385,8 +385,8 @@ mod exchange_rates_edge_cases {
         );
         let error = result.unwrap_err();
         assert!(
-            error.to_string().contains("NotFound"),
-            "Error should be NotFound: {}",
+            error.to_string().contains("Resource not found"),
+            "Error should be Resource not found: {}",
             error
         );
     }
