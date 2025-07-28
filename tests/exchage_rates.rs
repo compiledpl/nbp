@@ -97,12 +97,11 @@ async fn exchange_rates_get_rates() {
         client
             .exchange_rates()
             .rates(TableType::C, CurrencyCode::EUR)
-            .last_day()
+            .last_days(10)
             .send()
             .await
             .unwrap()
     );
-    
 
     dbg!(
         client
