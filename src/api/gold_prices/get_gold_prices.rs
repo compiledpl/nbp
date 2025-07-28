@@ -61,7 +61,7 @@ impl<State> GetGoldPricesBuilder<State> {
     pub async fn send(mut self) -> NbpResult<Vec<GoldPrice>> {
         if let Some(date_param) = self.date_parameter {
             let path_segment = date_param.to_path_segment();
-            self.service_client.join_path(&path_segment);
+            self.service_client.join_path(&path_segment)?;
         }
 
         self.service_client.get().await

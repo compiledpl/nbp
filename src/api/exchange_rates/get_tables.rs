@@ -14,7 +14,9 @@ pub struct GetTablesBuilder<State> {
 
 impl GetTablesBuilder<NoDateParameter> {
     pub fn new(mut service_client: ServiceClient, table_type: TableType) -> Self {
-        service_client.join_path(&format!("tables/{}/", table_type));
+        service_client
+            .join_path(&format!("tables/{}/", table_type))
+            .unwrap();
 
         Self {
             service_client,
@@ -72,7 +74,7 @@ impl<State> GetTablesBuilder<State> {
     pub async fn send(mut self) -> NbpResult<Vec<CurrencyExchangeTable>> {
         if let Some(date_param) = self.date_parameter {
             let path_segment = date_param.to_path_segment();
-            self.service_client.join_path(&path_segment);
+            self.service_client.join_path(&path_segment)?;
         }
 
         self.service_client.get().await

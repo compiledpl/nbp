@@ -7,6 +7,20 @@ use url::Url;
 
 const NBP_DEFAULT_BASE_URL: &str = "https://api.nbp.pl";
 
+/// Main client for accessing the National Bank of Poland API.
+///
+/// This client provides access to various NBP API endpoints such as
+/// exchange rates and gold prices.
+///
+/// ## Example
+///
+/// ```rust
+/// use nbp::client::NbpClient;
+///
+/// let client = NbpClient::default();
+/// let exchange_rates = client.exchange_rates();
+/// let gold_prices = client.gold_prices();
+/// ```
 #[derive(Clone)]
 pub struct NbpClient {
     base_url: Url,
@@ -25,10 +39,12 @@ impl Default for NbpClient {
 }
 
 impl NbpClient {
+    /// Returns the base URL for the NBP API.
     pub fn base_url(&self) -> &Url {
         &self.base_url
     }
 
+    /// Returns the configured API paths.
     pub fn paths(&self) -> Paths {
         self.paths.as_ref().clone()
     }

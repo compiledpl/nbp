@@ -23,8 +23,11 @@ impl ServiceClient {
         }
     }
 
-    pub fn join_path(&mut self, path: &str) {
-        self.base_url = self.base_url.join(path).unwrap();
+    pub fn join_path(&mut self, path: &str) -> NbpResult<()> {
+        self.base_url = self.base_url.join(path).map_err(|e| {
+            NbpError::invalid_argument(format!("Failed to join path '{}': {}", path, e))
+        })?;
+        Ok(())
     }
 
     pub async fn get<T>(&self) -> NbpResult<T>

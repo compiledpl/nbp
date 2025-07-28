@@ -19,7 +19,9 @@ impl GetRatesBuilder<NoDateParameter> {
         table: TableType,
         currency: CurrencyCode,
     ) -> Self {
-        service_client.join_path(&format!("rates/{}/{}/", table, currency));
+        service_client
+            .join_path(&format!("rates/{}/{}/", table, currency))
+            .unwrap();
 
         Self {
             service_client,
@@ -77,7 +79,7 @@ impl<State> GetRatesBuilder<State> {
     pub async fn send(mut self) -> NbpResult<CurrencyExchangeRates> {
         if let Some(date_param) = self.date_parameter {
             let path_segment = date_param.to_path_segment();
-            self.service_client.join_path(&path_segment);
+            self.service_client.join_path(&path_segment)?;
         }
 
         self.service_client.get().await
