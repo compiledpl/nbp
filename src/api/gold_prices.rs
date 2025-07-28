@@ -1,8 +1,8 @@
 mod get_gold_prices;
 
 use crate::api::gold_prices::get_gold_prices::GetGoldPricesBuilder;
-use crate::client::NbpClient;
 use crate::client::service_client::ServiceClient;
+use crate::client::{NBP_API_GOLD_PRICES_ENDPOINT, NbpClient};
 use crate::models::date_parameters::NoDateParameter;
 
 /// Handler for gold prices API operations.
@@ -30,11 +30,7 @@ impl NbpClient {
     /// ```
     pub fn gold_prices(&self) -> GoldPricesHandler {
         GoldPricesHandler {
-            client: ServiceClient::new(
-                self.base_url()
-                    .join(self.paths().gold_prices.as_str())
-                    .unwrap(),
-            ),
+            client: ServiceClient::new(self.base_url().join(NBP_API_GOLD_PRICES_ENDPOINT).unwrap()),
         }
     }
 }

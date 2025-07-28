@@ -1,11 +1,10 @@
-pub mod paths;
 pub(crate) mod service_client;
 
-use crate::client::paths::Paths;
-use std::sync::Arc;
 use url::Url;
 
 const NBP_DEFAULT_BASE_URL: &str = "https://api.nbp.pl";
+pub const NBP_API_EXCHANGE_RATES_ENDPOINT: &str = "api/exchangerates/";
+pub const NBP_API_GOLD_PRICES_ENDPOINT: &str = "api/cenyzlota/";
 
 /// Main client for accessing the National Bank of Poland API.
 ///
@@ -24,17 +23,13 @@ const NBP_DEFAULT_BASE_URL: &str = "https://api.nbp.pl";
 #[derive(Clone)]
 pub struct NbpClient {
     base_url: Url,
-    paths: Arc<Paths>,
 }
 
 impl Default for NbpClient {
     fn default() -> Self {
         let base_url =
             Url::parse(NBP_DEFAULT_BASE_URL).expect("Failed to parse NBP default base URL");
-        NbpClient {
-            base_url,
-            paths: Arc::new(Paths::default()),
-        }
+        NbpClient { base_url }
     }
 }
 
@@ -42,10 +37,5 @@ impl NbpClient {
     /// Returns the base URL for the NBP API.
     pub fn base_url(&self) -> &Url {
         &self.base_url
-    }
-
-    /// Returns the configured API paths.
-    pub fn paths(&self) -> Paths {
-        self.paths.as_ref().clone()
     }
 }

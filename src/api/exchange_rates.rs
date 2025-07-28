@@ -3,8 +3,8 @@ mod get_tables;
 
 use crate::api::exchange_rates::get_rates::GetRatesBuilder;
 use crate::api::exchange_rates::get_tables::GetTablesBuilder;
-use crate::client::NbpClient;
 use crate::client::service_client::ServiceClient;
+use crate::client::{NBP_API_EXCHANGE_RATES_ENDPOINT, NbpClient};
 use crate::models::currency_code::CurrencyCode;
 use crate::models::date_parameters::NoDateParameter;
 use crate::models::table_type::TableType;
@@ -37,7 +37,7 @@ impl NbpClient {
         ExchangeRatesHandler {
             client: ServiceClient::new(
                 self.base_url()
-                    .join(self.paths().exchange_rates.as_str())
+                    .join(NBP_API_EXCHANGE_RATES_ENDPOINT)
                     .unwrap(),
             ),
         }
