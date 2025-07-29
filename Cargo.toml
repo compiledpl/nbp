@@ -1,7 +1,7 @@
 [package]
 name = "nbp"
 description = "A Rust library for accessing the National Bank of Poland's API."
-version = "0.1.0"
+version = "0.2.0"
 readme = "README.md"
 repository = "https://github.com/compiledpl/nbp"
 homepage = "https://github.com/compiledpl/nbp"
